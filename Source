@@ -1,0 +1,136 @@
+// CMP201.2022 AX1.4 Sorting
+// William Kavanagh, Abertay University
+// Joseph McGinness, ID #2304542, 27/10/2023
+
+#include "Sorting.h"
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>		/* time */
+#include <iostream>
+#include <chrono>		/* timing */
+#include <string>
+
+// Bubble up and bubble back down.
+// Runs in O(N^2).
+void CocktailShakerSort(int a[], int size)
+{
+	int left = 0; // smallest
+	int right = size - 1; // largest 
+	int temp = 0; // used for swapping 
+	bool swapped = true;
+	while (swapped == true) {
+		swapped = false;
+		for (int i = left; i < right; i++) { // goes up the array to fetch the largest element...
+			if (a[i] > a[i + 1]) { 
+				temp = a[i]; // The Swapping 
+				a[i] = a[i + 1];
+				a[i + 1] = temp;
+				swapped = true;
+			}
+		}
+		if (!swapped) { // cocktail sort allows for early exit clause 
+			break;
+		}
+		swapped = false;
+		right--; // when the largest element is sorted, it goes to the next largest
+		for (int i = right; i >= left; i--) { // ...then goes back down to fetch the smallest 
+			if (a[i] > a[i + 1]) {
+				temp = a[i]; // The Swapping
+				a[i] = a[i + 1];
+				a[i + 1] = temp;
+				swapped = true;
+			}
+		}
+		left++; // when the smallest element is sorted, it goes to the next smallest 
+	}
+
+
+	
+}
+
+// IN-PLACE implementation of insertion sort.
+// Runs in O(N^2).
+void InsertionSort(int a[], int size)
+{
+	int j = 0;
+	int temp = 0; // again, used for swapping 
+	for (int i = 1; i < size; i++) {
+		j = i;
+
+		while (j > 0 && a[j] < a[j - 1]) { // this part does the swapping
+			temp = a[j]; 
+			a[j] = a[j - 1];
+			a[j - 1] = temp;
+			j--;
+		}
+	}
+	
+}
+
+// Partition function for QuickSort.
+// Runs in O(n) and chooses the final element as the pivot
+int partition(int a[], int begin, int end)
+{
+	int pivot = a[end]; // sets pivot to be the last element in the array 
+	int temp = 0; // same deal as before 
+	int i = begin - 1;
+	for (int j = begin; j <= end; j++) {
+		if (a[j] < pivot) { // swaps if a given element is smaller than the pivot (true in all but one case) 
+			i++;
+			temp = a[j];
+			a[j] = a[i];
+			a[i] = temp;
+
+
+		}
+
+	}
+	int pivotIndex = i + 1; 
+	temp = a[end]; // swaps the pivot into place 
+	a[end] = a[pivotIndex];
+	a[pivotIndex] = temp;
+	return pivotIndex;
+
+}
+
+// Sorting using partition() and recusion. Runs in O(n log(n))
+void QuickSort(int a[], int begin, int end)
+{
+	if (begin < end) {
+		int pi = partition(a, begin, end);
+		QuickSort(a, begin, pi - 1); // all that's needed here is to call the function 
+		QuickSort(a, pi + 1, end);
+	}
+	
+}
+
+// Takes an array and it's size (as int), fills the array with random values from 1 to size*3
+void fillArray(int a[], int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		a[i] = rand() % (size * 3);
+	}
+}
+
+// Utility function: O(n) sorted check with early exit.
+bool isSorted(int a[], int size)
+{
+	for (int i = 1; i < size; i++)
+	{
+		if (a[i] < a[i - 1]) return false;
+	}
+	return true;
+}
+
+// Utility function: Get two time points and return a string of nanoseconds between them.
+std::string timeDelta(std::chrono::steady_clock::time_point t, std::chrono::steady_clock::time_point t2)
+{
+	long timeDelta = std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t).count();
+	return std::to_string(timeDelta) + " ns";
+}
+
+// Main method included for testing. Remove or comment out before submitting or [-1.0].
+/*int main()	// Ignore the warnings, this is a semester 2 problem.
+{
+	
+} */
